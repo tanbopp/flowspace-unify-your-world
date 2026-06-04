@@ -143,25 +143,21 @@ function DayGrid({ days, events, onEventClick }: { days: Date[]; events: CalEven
             {d.toLocaleDateString(undefined, { weekday: "short" })} {d.getDate()}
           </div>
         ))}
-        {hours.map(h => (
-          <>
-            <div key={`h-${h}`} className="border-r border-b text-[10px] text-muted-foreground p-1 text-right">{h}:00</div>
-            {days.map((d, di) => {
-              const slotStart = new Date(d); slotStart.setHours(h, 0, 0, 0);
-              const slotEnd = new Date(d); slotEnd.setHours(h+1, 0, 0, 0);
-              const slotEvents = events.filter(e => {
-                const es = new Date(e.start); return sameDay(es, d) && es.getHours() === h;
-              });
-              return (
-                <div key={`c-${h}-${di}`} className="border-r border-b last:border-r-0 min-h-[44px] p-0.5 hover:bg-accent/30 relative">
-                  {slotEvents.map(e => (
-                    <div key={e.id} onClick={() => onEventClick(e.id)} className="text-[11px] px-1.5 py-0.5 rounded text-white truncate cursor-pointer mb-0.5" style={{ background: e.color }}>{e.title}</div>
-                  ))}
-                </div>
-              );
-            })}
-          </>
-        ))}
+        {hours.flatMap(h => [
+          <div key={`h-${h}`} className="border-r border-b text-[10px] text-muted-foreground p-1 text-right">{h}:00</div>,
+          ...days.map((d, di) => {
+            const slotEvents = events.filter(e => {
+              const es = new Date(e.start); return sameDay(es, d) && es.getHours() === h;
+            });
+            return (
+              <div key={`c-${h}-${di}`} className="border-r border-b last:border-r-0 min-h-[44px] p-0.5 hover:bg-accent/30 relative">
+                {slotEvents.map(e => (
+                  <div key={e.id} onClick={() => onEventClick(e.id)} className="text-[11px] px-1.5 py-0.5 rounded text-white truncate cursor-pointer mb-0.5" style={{ background: e.color }}>{e.title}</div>
+                ))}
+              </div>
+            );
+          })
+        ])}
       </div>
     </div>
   );
