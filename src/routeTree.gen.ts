@@ -9,38 +9,186 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrashRouteImport } from './routes/trash'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PagesRouteImport } from './routes/pages'
+import { Route as InboxRouteImport } from './routes/inbox'
+import { Route as CalendarRouteImport } from './routes/calendar'
+import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PagesIdRouteImport } from './routes/pages.$id'
+import { Route as BoardsIdRouteImport } from './routes/boards.$id'
 
+const TrashRoute = TrashRouteImport.update({
+  id: '/trash',
+  path: '/trash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagesRoute = PagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InboxRoute = InboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalendarRoute = CalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BoardsRoute = BoardsRouteImport.update({
+  id: '/boards',
+  path: '/boards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PagesIdRoute = PagesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PagesRoute,
+} as any)
+const BoardsIdRoute = BoardsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => BoardsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/boards': typeof BoardsRouteWithChildren
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/pages': typeof PagesRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/trash': typeof TrashRoute
+  '/boards/$id': typeof BoardsIdRoute
+  '/pages/$id': typeof PagesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/boards': typeof BoardsRouteWithChildren
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/pages': typeof PagesRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/trash': typeof TrashRoute
+  '/boards/$id': typeof BoardsIdRoute
+  '/pages/$id': typeof PagesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/boards': typeof BoardsRouteWithChildren
+  '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
+  '/pages': typeof PagesRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/trash': typeof TrashRoute
+  '/boards/$id': typeof BoardsIdRoute
+  '/pages/$id': typeof PagesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/boards'
+    | '/calendar'
+    | '/inbox'
+    | '/pages'
+    | '/settings'
+    | '/trash'
+    | '/boards/$id'
+    | '/pages/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/boards'
+    | '/calendar'
+    | '/inbox'
+    | '/pages'
+    | '/settings'
+    | '/trash'
+    | '/boards/$id'
+    | '/pages/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/boards'
+    | '/calendar'
+    | '/inbox'
+    | '/pages'
+    | '/settings'
+    | '/trash'
+    | '/boards/$id'
+    | '/pages/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BoardsRoute: typeof BoardsRouteWithChildren
+  CalendarRoute: typeof CalendarRoute
+  InboxRoute: typeof InboxRoute
+  PagesRoute: typeof PagesRouteWithChildren
+  SettingsRoute: typeof SettingsRoute
+  TrashRoute: typeof TrashRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trash': {
+      id: '/trash'
+      path: '/trash'
+      fullPath: '/trash'
+      preLoaderRoute: typeof TrashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pages': {
+      id: '/pages'
+      path: '/pages'
+      fullPath: '/pages'
+      preLoaderRoute: typeof PagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inbox': {
+      id: '/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof InboxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calendar': {
+      id: '/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof CalendarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/boards': {
+      id: '/boards'
+      path: '/boards'
+      fullPath: '/boards'
+      preLoaderRoute: typeof BoardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +196,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pages/$id': {
+      id: '/pages/$id'
+      path: '/$id'
+      fullPath: '/pages/$id'
+      preLoaderRoute: typeof PagesIdRouteImport
+      parentRoute: typeof PagesRoute
+    }
+    '/boards/$id': {
+      id: '/boards/$id'
+      path: '/$id'
+      fullPath: '/boards/$id'
+      preLoaderRoute: typeof BoardsIdRouteImport
+      parentRoute: typeof BoardsRoute
+    }
   }
 }
 
+interface BoardsRouteChildren {
+  BoardsIdRoute: typeof BoardsIdRoute
+}
+
+const BoardsRouteChildren: BoardsRouteChildren = {
+  BoardsIdRoute: BoardsIdRoute,
+}
+
+const BoardsRouteWithChildren =
+  BoardsRoute._addFileChildren(BoardsRouteChildren)
+
+interface PagesRouteChildren {
+  PagesIdRoute: typeof PagesIdRoute
+}
+
+const PagesRouteChildren: PagesRouteChildren = {
+  PagesIdRoute: PagesIdRoute,
+}
+
+const PagesRouteWithChildren = PagesRoute._addFileChildren(PagesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BoardsRoute: BoardsRouteWithChildren,
+  CalendarRoute: CalendarRoute,
+  InboxRoute: InboxRoute,
+  PagesRoute: PagesRouteWithChildren,
+  SettingsRoute: SettingsRoute,
+  TrashRoute: TrashRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
