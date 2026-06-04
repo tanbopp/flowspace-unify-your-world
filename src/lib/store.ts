@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore } from "react";
 
 export type BlockType =
   | "paragraph" | "h1" | "h2" | "h3"
@@ -207,11 +207,28 @@ export function setState(updater: (s: State) => State | void) {
 export function getState() { return state; }
 
 export function useStore<T>(selector: (s: State) => T): T {
-  return useSyncExternalStore(
-    (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
-    () => selector(state),
-    () => selector(state),
-  );
+  const lastState = useRef<State | undefined>(undefined);
+  const lastResult = useRef<T | undefined>(undefined);
+
+  const stableSelector = useRef(selector);
+  stableSelector.current = selector;
+
+  const subscribe = useRef((cb: () => void) => {
+    listeners.add(cb);
+    return () => listeners.delete(cb);
+  }).current;
+
+  const getSnapshot = useRef(() => {
+    if (lastState.current === state && lastResult.current !== undefined) {
+      return lastResult.current as T;
+    }
+    const result = stableSelector.current(state);
+    lastState.current = state;
+    lastResult.current = result;
+    return result;
+  }).current;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 }
 
 export { uid };
