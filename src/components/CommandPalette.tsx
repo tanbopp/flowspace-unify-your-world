@@ -1,12 +1,13 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useStore } from "../lib/store";
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
 import { FileText, LayoutGrid, Calendar as CalIcon } from "lucide-react";
 
 export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
   const pages = useStore(s => s.pages.filter(p => !p.trashed));
   const boards = useStore(s => s.boards.filter(b => !b.trashed));
   const cards = useStore(s => s.cards.filter(c => !c.trashed));
+  const lists = useStore(s => s.lists);
   const events = useStore(s => s.events);
   const navigate = useNavigate();
 
@@ -32,21 +33,14 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
           ))}
         </CommandGroup>
         <CommandGroup heading="Tasks">
-          {cards.slice(0, 20).map(c => (
-            <CommandItem key={c.id} value={`task ${c.title}`} onSelect={() => {
-              const list = useStore.length; // placeholder
-              const boardId = (typeof window !== "undefined") ? (
-                // find boardId via list
-                (() => {
-                  const s = (window as any).__fsState;
-                  return s;
-                })()
-              ) : undefined;
-              go(() => navigate({ to: "/boards" }));
-            }}>
-              <LayoutGrid className="h-3.5 w-3.5 mr-2 text-muted-foreground" />{c.title}
-            </CommandItem>
-          ))}
+          {cards.slice(0, 30).map(c => {
+            const list = lists.find(l => l.id === c.listId);
+            return (
+              <CommandItem key={c.id} value={`task ${c.title}`} onSelect={() => go(() => list && navigate({ to: "/boards/$id", params: { id: list.boardId } }))}>
+                <LayoutGrid className="h-3.5 w-3.5 mr-2 text-muted-foreground" />{c.title}
+              </CommandItem>
+            );
+          })}
         </CommandGroup>
         <CommandGroup heading="Events">
           {events.map(e => (
