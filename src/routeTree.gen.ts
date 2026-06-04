@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrashRouteImport } from './routes/trash'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PagesRouteImport } from './routes/pages'
+import { Route as InboxRouteImport } from './routes/inbox'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BoardsRouteImport } from './routes/boards'
 import { Route as IndexRouteImport } from './routes/index'
@@ -31,6 +32,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const PagesRoute = PagesRouteImport.update({
   id: '/pages',
   path: '/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InboxRoute = InboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalendarRoute = CalendarRouteImport.update({
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
   '/pages': typeof PagesRouteWithChildren
   '/settings': typeof SettingsRoute
   '/trash': typeof TrashRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
   '/pages': typeof PagesRouteWithChildren
   '/settings': typeof SettingsRoute
   '/trash': typeof TrashRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/boards': typeof BoardsRouteWithChildren
   '/calendar': typeof CalendarRoute
+  '/inbox': typeof InboxRoute
   '/pages': typeof PagesRouteWithChildren
   '/settings': typeof SettingsRoute
   '/trash': typeof TrashRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/boards'
     | '/calendar'
+    | '/inbox'
     | '/pages'
     | '/settings'
     | '/trash'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/boards'
     | '/calendar'
+    | '/inbox'
     | '/pages'
     | '/settings'
     | '/trash'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/boards'
     | '/calendar'
+    | '/inbox'
     | '/pages'
     | '/settings'
     | '/trash'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BoardsRoute: typeof BoardsRouteWithChildren
   CalendarRoute: typeof CalendarRoute
+  InboxRoute: typeof InboxRoute
   PagesRoute: typeof PagesRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   TrashRoute: typeof TrashRoute
@@ -153,6 +166,13 @@ declare module '@tanstack/react-router' {
       path: '/pages'
       fullPath: '/pages'
       preLoaderRoute: typeof PagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inbox': {
+      id: '/inbox'
+      path: '/inbox'
+      fullPath: '/inbox'
+      preLoaderRoute: typeof InboxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calendar': {
@@ -218,6 +238,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BoardsRoute: BoardsRouteWithChildren,
   CalendarRoute: CalendarRoute,
+  InboxRoute: InboxRoute,
   PagesRoute: PagesRouteWithChildren,
   SettingsRoute: SettingsRoute,
   TrashRoute: TrashRoute,
@@ -225,3 +246,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
