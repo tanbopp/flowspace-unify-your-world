@@ -17,8 +17,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "FlowSpace — Docs, Tasks & Calendar" },
       { property: "og:description", content: "All-in-one productivity workspace." },
       { name: "twitter:description", content: "All-in-one productivity workspace." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/389a60b8-7ccd-4e81-8ca5-22255c06c46f/id-preview-e95c4663--c209761c-287b-49d7-a0f6-1b6292459990.lovable.app-1780575730088.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/389a60b8-7ccd-4e81-8ca5-22255c06c46f/id-preview-e95c4663--c209761c-287b-49d7-a0f6-1b6292459990.lovable.app-1780575730088.png" },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/389a60b8-7ccd-4e81-8ca5-22255c06c46f/id-preview-e95c4663--c209761c-287b-49d7-a0f6-1b6292459990.lovable.app-1780575730088.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/389a60b8-7ccd-4e81-8ca5-22255c06c46f/id-preview-e95c4663--c209761c-287b-49d7-a0f6-1b6292459990.lovable.app-1780575730088.png",
+      },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:type", content: "website" },
     ],
@@ -33,21 +41,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const theme = useStore(s => s.theme);
+  const theme = useStore((s) => s.theme);
   useEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
   }, [theme]);
   return (
     <QueryClientProvider client={queryClient}>
-      <AppShell><Outlet /></AppShell>
+      <AppShell>
+        <Outlet />
+      </AppShell>
       <Toaster />
     </QueryClientProvider>
   );
